@@ -1,9 +1,23 @@
-import { ArrowLeft, Wand2, Eye, Sparkles, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Wand2, Eye, Sparkles, AlertTriangle, PenLine, ImageIcon, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { useWorkflow } from '../../context/WorkflowContext';
 import { WORKFLOW_OPTIONS } from '../../config/workflowData';
 import { getPromptPreview } from '../../utils/promptGenerator';
 import { generateBangboo, generateChimera } from '../../services/geminiService';
+
+// 参考图配置
+const REFERENCE_IMAGES = {
+  zzz_bangboo: {
+    src: '/assets/bangboo-reference.png',
+    alt: '邦布风格参考图',
+    title: '邦布风格参考'
+  },
+  hsr_chimera: {
+    src: '/assets/chimera-reference.jpg',
+    alt: '奇美拉风格参考图',
+    title: '奇美拉风格参考'
+  }
+};
 
 const StyleSelect = () => {
   const { 
@@ -22,10 +36,13 @@ const StyleSelect = () => {
     selectedTheme,
     setSelectedTheme,
     selectedDecorations,
-    toggleDecoration
+    toggleDecoration,
+    customPrompt,
+    setCustomPrompt
   } = useWorkflow();
   
   const [showPromptPreview, setShowPromptPreview] = useState(false);
+  const [showReferenceImage, setShowReferenceImage] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
 
@@ -33,7 +50,7 @@ const StyleSelect = () => {
   const isBangboo = selectedFunction === 'zzz_bangboo';
   const isChimera = selectedFunction === 'hsr_chimera';
   const isGeminiFeature = isBangboo || isChimera;
-  const promptPreview = !isGeminiFeature ? getPromptPreview(selectedFunction, selectedStyles) : null;
+  const promptPreview = !isGeminiFeature ? getPromptPreview(selectedFunction, selectedStyles, customPrompt) : null;
 
   const handleGenerate = async () => {
     setError(null);
@@ -45,7 +62,8 @@ const StyleSelect = () => {
       const result = await generateBangboo(
         uploadedImage.base64,
         selectedMood,
-        selectedRenderStyle
+        selectedRenderStyle,
+        customPrompt
       );
 
       if (result.success) {
@@ -63,7 +81,8 @@ const StyleSelect = () => {
       const result = await generateChimera(
         uploadedImage.base64,
         selectedTheme,
-        selectedDecorations
+        selectedDecorations,
+        customPrompt
       );
 
       if (result.success) {
@@ -198,6 +217,33 @@ const StyleSelect = () => {
                   🤖 基于 <a href="https://github.com/Rayinf/bamboo" target="_blank" rel="noopener noreferrer" className="underline font-medium">Bangboo Factory</a> 项目，使用 Gemini AI 生成邦布角色
                 </p>
               </div>
+
+              {/* Reference Image Toggle */}
+              <div className="space-y-3">
+                <button
+                  onClick={() => setShowReferenceImage(!showReferenceImage)}
+                  className="flex items-center gap-2 text-violet-500 hover:text-violet-700 text-sm transition-colors"
+                >
+                  <ImageIcon size={16} />
+                  <span>{REFERENCE_IMAGES.zzz_bangboo.title}</span>
+                  {showReferenceImage ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                
+                {showReferenceImage && (
+                  <div className="rounded-xl overflow-hidden border border-violet-200 bg-white">
+                    <img
+                      src={REFERENCE_IMAGES.zzz_bangboo.src}
+                      alt={REFERENCE_IMAGES.zzz_bangboo.alt}
+                      className="w-full h-auto"
+                    />
+                    <div className="p-3 bg-violet-50 border-t border-violet-100">
+                      <p className="text-violet-600 text-xs text-center">
+                        📸 AI 会参考此风格生成邦布角色
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </>
           ) : isChimera ? (
             // Chimera 专用配置
@@ -268,6 +314,33 @@ const StyleSelect = () => {
                 <p className="text-amber-700 text-sm">
                   🐱 基于《崩坏：星穹铁道》奇美拉设计风格，使用 Gemini AI 生成毛茸茸的可爱随宠
                 </p>
+              </div>
+
+              {/* Reference Image Toggle */}
+              <div className="space-y-3">
+                <button
+                  onClick={() => setShowReferenceImage(!showReferenceImage)}
+                  className="flex items-center gap-2 text-amber-600 hover:text-amber-800 text-sm transition-colors"
+                >
+                  <ImageIcon size={16} />
+                  <span>{REFERENCE_IMAGES.hsr_chimera.title}</span>
+                  {showReferenceImage ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                
+                {showReferenceImage && (
+                  <div className="rounded-xl overflow-hidden border border-amber-200 bg-white">
+                    <img
+                      src={REFERENCE_IMAGES.hsr_chimera.src}
+                      alt={REFERENCE_IMAGES.hsr_chimera.alt}
+                      className="w-full h-auto"
+                    />
+                    <div className="p-3 bg-amber-50 border-t border-amber-100">
+                      <p className="text-amber-700 text-xs text-center">
+                        📸 AI 会参考此风格生成奇美拉角色
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           ) : (
@@ -343,6 +416,37 @@ const StyleSelect = () => {
               </div>
             </>
           )}
+
+          {/* Custom Prompt Input */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-gray-600 text-sm font-medium">
+              <PenLine size={16} />
+              <span>自定义描述 (可选)</span>
+            </div>
+            <textarea
+              value={customPrompt}
+              onChange={(e) => setCustomPrompt(e.target.value)}
+              placeholder={
+                isBangboo 
+                  ? "例如: 添加一个小天使光环、背景加入霓虹灯效果..."
+                  : isChimera 
+                    ? "例如: 希望有樱花飘落的效果、眼睛是星空色..."
+                    : "例如: 添加闪闪发光的特效、背景改成粉色渐变..."
+              }
+              className={`
+                w-full p-4 rounded-xl border text-sm resize-none transition-all
+                placeholder:text-gray-300 focus:outline-none
+                ${isChimera 
+                  ? 'border-amber-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100' 
+                  : 'border-pink-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100'
+                }
+              `}
+              rows={3}
+            />
+            <p className="text-gray-400 text-xs">
+              💡 输入额外的创意描述，AI 会尝试融入到生成结果中
+            </p>
+          </div>
 
           {/* Error Message */}
           {error && (

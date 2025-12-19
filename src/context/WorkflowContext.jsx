@@ -17,6 +17,9 @@ export const WorkflowProvider = ({ children }) => {
   // Chimera 专用状态
   const [selectedTheme, setSelectedTheme] = useState('default');
   const [selectedDecorations, setSelectedDecorations] = useState([]);
+  
+  // 自定义 Prompt 状态
+  const [customPrompt, setCustomPrompt] = useState('');
 
   const goToNextStep = useCallback(() => {
     setCurrentStep(prev => Math.min(prev + 1, 4));
@@ -41,6 +44,7 @@ export const WorkflowProvider = ({ children }) => {
     setSelectedRenderStyle('cel-shaded');
     setSelectedTheme('default');
     setSelectedDecorations([]);
+    setCustomPrompt('');
   }, []);
 
   const toggleDecoration = useCallback((decorId) => {
@@ -70,6 +74,7 @@ export const WorkflowProvider = ({ children }) => {
     selectedRenderStyle,
     selectedTheme,
     selectedDecorations,
+    customPrompt,
     setCurrentStep,
     setSelectedFunction,
     setUploadedImage,
@@ -80,6 +85,7 @@ export const WorkflowProvider = ({ children }) => {
     setSelectedRenderStyle,
     setSelectedTheme,
     setSelectedDecorations,
+    setCustomPrompt,
     goToNextStep,
     goToPrevStep,
     goToStep,
