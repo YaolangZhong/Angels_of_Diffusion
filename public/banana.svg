@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="angelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="45" fill="url(#angelGrad)"/>
+  <path d="M50 25 L55 40 L70 40 L58 50 L62 65 L50 55 L38 65 L42 50 L30 40 L45 40 Z" fill="white"/>
+  <circle cx="35" cy="30" r="8" fill="white" opacity="0.6"/>
+  <circle cx="65" cy="30" r="8" fill="white" opacity="0.6"/>
+</svg>
