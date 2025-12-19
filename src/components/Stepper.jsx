@@ -1,17 +1,20 @@
 import { Check } from 'lucide-react';
-import { WORKFLOW_STEPS } from '../config/workflowData';
+import { WORKFLOW_STEPS, EMOJI_WORKFLOW_STEPS } from '../config/workflowData';
 import { useWorkflow } from '../context/WorkflowContext';
 
 const Stepper = () => {
-  const { currentStep } = useWorkflow();
+  const { currentStep, selectedFunction } = useWorkflow();
+  
+  // 根据选择的功能使用不同的步骤标签
+  const steps = selectedFunction === 'wechat_emoji' ? EMOJI_WORKFLOW_STEPS : WORKFLOW_STEPS;
 
   return (
     <div className="w-full max-w-3xl mx-auto mb-8">
       <div className="flex items-center justify-between">
-        {WORKFLOW_STEPS.map((step, index) => {
+        {steps.map((step, index) => {
           const isCompleted = currentStep > step.id;
           const isCurrent = currentStep === step.id;
-          const isLast = index === WORKFLOW_STEPS.length - 1;
+          const isLast = index === steps.length - 1;
 
           return (
             <div key={step.id} className="flex items-center flex-1">

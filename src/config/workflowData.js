@@ -94,6 +94,14 @@ export const WORKFLOW_STEPS = [
   { id: 4, title: '结果交付', description: '获取并下载生成结果' }
 ];
 
+// 表情包功能的步骤标签（第4步为切图打包）
+export const EMOJI_WORKFLOW_STEPS = [
+  { id: 1, title: '选择功能', description: '选择你想要的转换类型' },
+  { id: 2, title: '上传图片', description: '上传一张真人照片' },
+  { id: 3, title: '选择风格', description: '挑选你喜欢的艺术风格' },
+  { id: 4, title: '切图打包', description: '裁剪表情并打包下载' }
+];
+
 // Bangboo 基础 Prompt (基于 bamboo 原项目，翻译为中文)
 export const BANGBOO_BASE_PROMPT = `
 仔细分析上传的图像。你的任务是将图中的主体（人物、动物或物体）重新想象为《绝区零》游戏中的"邦布"角色。

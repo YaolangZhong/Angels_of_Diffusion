@@ -1,13 +1,14 @@
-import { Sparkles, Github } from 'lucide-react';
+import { Github } from 'lucide-react';
 import { WorkflowProvider, useWorkflow } from './context/WorkflowContext';
 import Stepper from './components/Stepper';
 import FunctionSelect from './components/steps/FunctionSelect';
 import ImageUpload from './components/steps/ImageUpload';
 import StyleSelect from './components/steps/StyleSelect';
 import DeliveryView from './components/steps/DeliveryView';
+import EmojiCutView from './components/steps/EmojiCutView';
 
 const WorkflowContent = () => {
-  const { currentStep } = useWorkflow();
+  const { currentStep, selectedFunction } = useWorkflow();
 
   const renderStep = () => {
     switch (currentStep) {
@@ -18,6 +19,10 @@ const WorkflowContent = () => {
       case 3:
         return <StyleSelect />;
       case 4:
+        // 表情包功能使用 EmojiCutView 进行切图打包
+        if (selectedFunction === 'wechat_emoji') {
+          return <EmojiCutView />;
+        }
         return <DeliveryView />;
       default:
         return <FunctionSelect />;
@@ -32,9 +37,11 @@ const WorkflowContent = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-violet-500 flex items-center justify-center shadow-lg shadow-pink-500/20">
-                <Sparkles className="text-white" size={22} />
-              </div>
+              <img 
+                src="/assets/avatar.png" 
+                alt="Angels of Diffusion" 
+                className="w-10 h-10 rounded-xl shadow-lg shadow-pink-500/20 object-cover"
+              />
               <div>
                 <h1 className="text-lg font-bold text-gray-900 font-display">Angels of Diffusion</h1>
                 <p className="text-xs text-gray-500">AI 图像工作流</p>
