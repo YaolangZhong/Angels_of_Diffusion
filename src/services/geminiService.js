@@ -30,9 +30,23 @@ const loadReferenceImage = async (imagePath) => {
   }
 };
 
-// 从环境变量获取 API Key
-const getApiKey = () => {
+// 从环境变量或本地存储获取 API Key
+export const getApiKey = () => {
+  // 优先使用本地存储的 Key (用户在 UI 设置的)
+  const localKey = localStorage.getItem('GEMINI_API_KEY');
+  if (localKey) return localKey;
+  
+  // 其次使用环境变量
   return import.meta.env.VITE_GEMINI_API_KEY || '';
+};
+
+// 保存 API Key 到本地存储
+export const saveApiKey = (key) => {
+  if (key) {
+    localStorage.setItem('GEMINI_API_KEY', key);
+  } else {
+    localStorage.removeItem('GEMINI_API_KEY');
+  }
 };
 
 /**
@@ -145,11 +159,14 @@ export const generateBangboo = async (imageBase64, mood, renderStyle, customProm
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // 使用支持图像生成的模型
+    // 使用支持图像生成的模型 - 更新为 Gemini 3 Pro Preview
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.0-flash-exp-image-generation',
+      model: 'gemini-3-pro-image-preview',
       generationConfig: {
-        responseModalities: ['Text', 'Image']
+        imageConfig: {
+          aspectRatio: "1:1",
+          imageSize: "1K"
+        }
       }
     });
 
@@ -260,9 +277,12 @@ export const generateChimera = async (imageBase64, theme, decorations = [], cust
     const genAI = new GoogleGenerativeAI(apiKey);
     
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.0-flash-exp-image-generation',
+      model: 'gemini-3-pro-image-preview',
       generationConfig: {
-        responseModalities: ['Text', 'Image']
+        imageConfig: {
+          aspectRatio: "1:1",
+          imageSize: "1K"
+        }
       }
     });
 

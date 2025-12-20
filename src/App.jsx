@@ -1,4 +1,4 @@
-import { Github } from 'lucide-react';
+import { Github, Key } from 'lucide-react';
 import { WorkflowProvider, useWorkflow } from './context/WorkflowContext';
 import Stepper from './components/Stepper';
 import FunctionSelect from './components/steps/FunctionSelect';
@@ -6,9 +6,12 @@ import ImageUpload from './components/steps/ImageUpload';
 import StyleSelect from './components/steps/StyleSelect';
 import DeliveryView from './components/steps/DeliveryView';
 import EmojiCutView from './components/steps/EmojiCutView';
+import ApiKeyModal from './components/ApiKeyModal';
+import { useState } from 'react';
 
 const WorkflowContent = () => {
   const { currentStep, selectedFunction } = useWorkflow();
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -49,14 +52,24 @@ const WorkflowContent = () => {
             </div>
 
             {/* Right side */}
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-            >
-              <Github size={20} />
-            </a>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsApiKeyModalOpen(true)}
+                className="p-2 rounded-lg text-gray-400 hover:text-pink-500 hover:bg-pink-50 transition-colors"
+                title="设置 API Key"
+              >
+                <Key size={20} />
+              </button>
+              
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                <Github size={20} />
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -82,6 +95,12 @@ const WorkflowContent = () => {
           </p>
         </div>
       </footer>
+
+      {/* Modals */}
+      <ApiKeyModal 
+        isOpen={isApiKeyModalOpen} 
+        onClose={() => setIsApiKeyModalOpen(false)} 
+      />
     </div>
   );
 };
